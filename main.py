@@ -1,6 +1,6 @@
 import numpy as np
 import matplotlib.pyplot as plt
-from sklearn import datasets
+from sklearn.datasets import fetch_openml
 from sklearn.decomposition import PCA
 
 from kmeans_pp import kmeans_plus_plus_init
@@ -8,15 +8,15 @@ from Exponential_quadtree import exponential_quadtree_coreset
 
 
 def main():
-    # Constants
-    k = 3
+    # Load a medium/large dataset (~70k samples): MNIST from OpenML
+    mnist = fetch_openml("mnist_784", version=1, as_frame=False)
+    X = mnist.data
+    y = mnist.target.astype(int)
 
-    # Load a default sklearn dataset (Iris)
-    iris = datasets.load_iris()
-    X = iris.data
-    y = iris.target
+    # Set k equal to the true number of classes
+    k = len(np.unique(y))
 
-    # Reduce to 2 dimensions using PCA (in case data has >2 features)
+    # Reduce to 2 dimensions using PCA
     pca = PCA(n_components=2)
     X_2d = pca.fit_transform(X)
     # Get k centers using k-means++ initialization
@@ -28,7 +28,7 @@ def main():
     plt.scatter(c[:, 0], c[:, 1], c="red", s=120, marker="X", label="Chosen centers")
     plt.xlabel("PC 1")
     plt.ylabel("PC 2")
-    plt.title(f"Iris dataset with k-means++ centers (k = {k})")
+    plt.title(f"MNIST with k-means++ centers (k = {k})")
     plt.legend()
     plt.tight_layout()
 
@@ -36,6 +36,9 @@ def main():
     coreset_points, coreset_weights, squares = exponential_quadtree_coreset(X_2d, random_state=0)
     print("Number of original points:", X_2d.shape[0])
     print("Number of coreset points:", coreset_points.shape[0])
+    print("Coreset points with weights (x, y, w):")
+    for p, w in zip(coreset_points, coreset_weights):
+        print(p[0], p[1], w)
 
     # Plot coreset and quadtree squares on a separate figure
     plt.figure(figsize=(6, 5))
@@ -54,6 +57,27 @@ def main():
     plt.title("Exponential quadtree coreset")
     plt.legend()
     plt.tight_layout()
+
+    # Third visualization: only weighted points, colored by weight (blue=1, red=max)
+    plt.figure(figsize=(6, 5))
+    w_min, w_max = 1, coreset_weights.max()
+    scatter = plt.scatter(
+        coreset_points[:, 0],
+        coreset_points[:, 1],
+        c=coreset_weights,
+        cmap="coolwarm",  # blue (low) to red (high)
+        s=5,             # smaller dots
+        edgecolor="none",
+        vmin=w_min,
+        vmax=w_max,
+    )
+    cbar = plt.colorbar(scatter)
+    cbar.set_label("Coreset weight (blue = 1, red = max)")
+    plt.xlabel("PC 1")
+    plt.ylabel("PC 2")
+    plt.title("Coreset points colored by weight")
+    plt.tight_layout()
+
     plt.show()
 
 
