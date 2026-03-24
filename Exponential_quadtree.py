@@ -1,7 +1,8 @@
 import numpy as np
+from kmeans_pp import compute_kmeans_cost
 
 
-def exponential_quadtree_coreset(X_2d, random_state=None):
+def exponential_quadtree_coreset(X_2d, centers, eps, random_state=None):
     """
     Build an exponential quadtree-style coreset.
 
@@ -9,6 +10,17 @@ def exponential_quadtree_coreset(X_2d, random_state=None):
     at least 2**i points. Otherwise it becomes a leaf and we:
       - choose one point in the square uniformly at random
       - assign it a weight equal to the number of points in the square
+
+    Parameters
+    ----------
+    X_2d : np.ndarray of shape (n_samples, 2)
+        2D data points.
+    centers : np.ndarray of shape (k, 2)
+        The centers to use for cost calculation.
+    eps : float
+        Approximation parameter.
+    random_state : int or None
+        Optional random seed for reproducibility.
 
     Returns
     -------
@@ -30,6 +42,21 @@ def exponential_quadtree_coreset(X_2d, random_state=None):
     x_min, x_max = np.min(X_2d[:, 0]), np.max(X_2d[:, 0])
     y_min, y_max = np.min(X_2d[:, 1]), np.max(X_2d[:, 1])
 
+    # Make the bounding box a square
+    x_range = x_max - x_min
+    y_range = y_max - y_min
+    side_length = max(x_range, y_range)
+    if x_range < side_length:
+        x_max = x_min + side_length
+    else:
+        y_max = y_min + side_length
+
+    n = X_2d.shape[0]
+    k = centers.shape[0]
+    d = 2  # dimension
+
+    cost = compute_kmeans_cost(X_2d, centers)
+
     reps = []
     weights = []
     squares = []
@@ -42,7 +69,9 @@ def exponential_quadtree_coreset(X_2d, random_state=None):
             squares.append((x0, x1, y0, y1))
             return
 
-        threshold = 2**depth
+        #print(cost, depth, m, (eps ** (2 * d + 1) / (4 * k * np.log(n) ** 2)))
+        threshold = (cost / (side_length/(2**depth))) * (eps ** (2 * d + 1) / (4 * k * np.log(n) ** 2))
+        #print(f"Depth {depth}: {m} points, threshold = {threshold:.4f}")
         # If not enough points to justify splitting at this depth, make a leaf
         if m < threshold:
             chosen_idx = np.random.choice(indices)
