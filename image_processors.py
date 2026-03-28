@@ -39,7 +39,7 @@ def load_image_as_rgb_array(image_path):
     return rgb_array, (height, width, 3)
 
 
-def compress_image_with_coreset(image_path, t, eps=0.1, random_state=None):
+def compress_image_with_coreset(image_path, t, eps=0.1, random_state=None, n_steps=67):
     """
     Compress an image using coreset-based k-means on RGB values.
 
@@ -53,6 +53,8 @@ def compress_image_with_coreset(image_path, t, eps=0.1, random_state=None):
         Approximation parameter for coreset.
     random_state : int or None
         Random seed.
+    n_steps : int
+        Number of local-search steps in weighted kmeans++ refinement.
 
     Returns
     -------
@@ -88,7 +90,7 @@ def compress_image_with_coreset(image_path, t, eps=0.1, random_state=None):
         coreset_points,
         coreset_weights,
         t,
-        n_steps=100,
+        n_steps=n_steps,
         random_state=random_state
     )
     

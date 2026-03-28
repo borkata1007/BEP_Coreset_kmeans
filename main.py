@@ -3,12 +3,12 @@ import matplotlib.pyplot as plt
 from sklearn.datasets import fetch_openml
 from sklearn.decomposition import PCA
 
-from kmeans_pp import kmeans_plus_plus_init, kmeans_plus_plus_local_search_full, kmeans_plus_plus_local_search_weighted, compute_kmeans_cost
-from Exponential_quadtree import exponential_quadtree_coreset
+from kmeans_pp_nd import kmeans_plus_plus_init, kmeans_plus_plus_local_search_full, kmeans_plus_plus_local_search_weighted, compute_kmeans_cost
+from Exponential_quadtree_nd import exponential_quadtree_coreset
 from image_processors import compress_image_with_coreset, save_compressed_image
 
 
-def workflow_dataset(eps=10):
+def workflow_dataset(eps=10, local_search_steps=67):
     """
     Dataset workflow: Load MNIST, build coreset, compare original centers vs coreset-derived centers.
     
@@ -40,7 +40,7 @@ def workflow_dataset(eps=10):
     c, full_local_cost = kmeans_plus_plus_local_search_full(
         X_2d,
         k,
-        n_steps=100,
+        n_steps=local_search_steps,
         random_state=0,
     )
     print("finished kmeans++ local search")
@@ -82,7 +82,7 @@ def workflow_dataset(eps=10):
         coreset_points,
         coreset_weights,
         k,
-        n_steps=100,
+        n_steps=local_search_steps,
         random_state=0,
     )
     print("finished weighted kmeans++ local search")
@@ -143,7 +143,7 @@ def workflow_dataset(eps=10):
     print("Dataset workflow completed.\n")
 
 
-def workflow_image(image_path, t, eps=0.1):
+def workflow_image(image_path, t, eps=0.1, local_search_steps=67):
     """
     Image compression workflow: Compress image using coreset-based k-means on RGB data.
     
@@ -162,7 +162,13 @@ def workflow_image(image_path, t, eps=0.1):
     
     print(f"Loading image from: {image_path}")
     print("begins image compression...")
-    compressed_img, original_shape, stats = compress_image_with_coreset(image_path, t, eps=eps, random_state=0)
+    compressed_img, original_shape, stats = compress_image_with_coreset(
+        image_path,
+        t,
+        eps=eps,
+        random_state=0,
+        n_steps=local_search_steps,
+    )
     print("finished image compression")
     
     output_path = image_path.replace(".png", f"_compressed_t{t}.png").replace(".jpg", f"_compressed_t{t}.jpg")
@@ -182,20 +188,20 @@ def workflow_image(image_path, t, eps=0.1):
 def main():
     """Main function to choose which workflow(s) to run."""
     # Constants
-    eps_dataset = 1
-    t = 16
+    eps_dataset = 2
+    t = 2
+    local_search_steps = 167
     # number of colors for image compression
-    eps_image = 2 # approximation parameter for image compression
+    eps_image = 1.5 # approximation parameter for image compression
     
     # Choose which workflow(s) to run:
     # Uncomment the workflows you want to execute
     
     # Workflow 1: Dataset with center comparison
-    workflow_dataset(eps=eps_dataset)
-    
+    workflow_dataset(eps=eps_dataset, local_search_steps=local_search_steps)
     # Workflow 2: Image compression
     # Uncomment to run image compression workflow
-    # workflow_image("pictures/cune.png", t=t, eps=eps_image)
+    #workflow_image("pictures/image.png", t=t, eps=eps_image, local_search_steps=local_search_steps)
 
 
 if __name__ == "__main__":

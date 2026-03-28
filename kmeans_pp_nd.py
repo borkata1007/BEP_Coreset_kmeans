@@ -22,17 +22,19 @@ def kmeans_plus_plus_init(X, k, random_state=None):
     if random_state is not None:
         np.random.seed(random_state)
 
-    n = X.shape[0]
+    n, d = X.shape
+    print(f"! kmeans++ init: n={n}, d={d}, k={k}")
 
     # Choose first center uniformly at random
     first_idx = np.random.randint(0, n)
+    print(f"! kmeans++ first center idx={first_idx}")
     centers = np.array([X[first_idx]])  # shape (1, d)
 
     # Initial distances from all points to the first center
     min_distances = np.linalg.norm(X - centers[0], axis=1)  # shape (n,)
 
     # k-means++ style sampling of remaining centers
-    for _ in range(2, k + 1):
+    for step in range(2, k + 1):
         # Compute probabilities proportional to squared distance to closest center
         dist_sq = min_distances ** 2
         total_distance_sq = np.sum(dist_sq)
@@ -40,6 +42,7 @@ def kmeans_plus_plus_init(X, k, random_state=None):
 
         # Sample a new center index according to these probabilities
         new_center_index = np.random.choice(n, p=probabilities)
+        print(f"! kmeans++ step={step} picked idx={new_center_index}")
         new_center = X[new_center_index]
 
         # Add the new center to centers (keep shape (num_centers, d))
@@ -49,6 +52,7 @@ def kmeans_plus_plus_init(X, k, random_state=None):
         distances_to_new_center = np.linalg.norm(X - new_center, axis=1)
         min_distances = np.minimum(min_distances, distances_to_new_center)
 
+    print(f"! kmeans++ init done: centers={centers.shape[0]}")
     return centers
 
 
@@ -75,18 +79,20 @@ def kmeans_plus_plus_init_weighted(X, weights, k, random_state=None):
     if random_state is not None:
         np.random.seed(random_state)
 
-    n = X.shape[0]
+    n, d = X.shape
     weights = np.asarray(weights)
+    print(f"! kmeans++ weighted init: n={n}, d={d}, k={k}")
 
     # Choose first center uniformly at random (weighted)
     first_idx = np.random.choice(n, p=weights / weights.sum())
+    print(f"! kmeans++ weighted first center idx={first_idx}")
     centers = np.array([X[first_idx]])  # shape (1, d)
 
     # Initial distances from all points to the first center
     min_distances = np.linalg.norm(X - centers[0], axis=1)  # shape (n,)
 
     # k-means++ style sampling of remaining centers
-    for _ in range(2, k + 1):
+    for step in range(2, k + 1):
         # Compute weighted probabilities proportional to squared distance to closest center
         dist_sq = min_distances ** 2
         weighted_dist_sq = weights * dist_sq
@@ -100,6 +106,7 @@ def kmeans_plus_plus_init_weighted(X, weights, k, random_state=None):
 
         # Sample a new center index according to these probabilities
         new_center_index = np.random.choice(n, p=probabilities)
+        print(f"! kmeans++ weighted step={step} picked idx={new_center_index}")
         new_center = X[new_center_index]
 
         # Add the new center to centers
@@ -109,6 +116,7 @@ def kmeans_plus_plus_init_weighted(X, weights, k, random_state=None):
         distances_to_new_center = np.linalg.norm(X - new_center, axis=1)
         min_distances = np.minimum(min_distances, distances_to_new_center)
 
+    print(f"! kmeans++ weighted init done: centers={centers.shape[0]}")
     return centers
 
 
@@ -174,6 +182,7 @@ def _kmeans_plus_plus_local_search(X, centers, weights, n_steps=100, random_stat
 
     current_centers = centers.copy()
     current_cost = compute_kmeans_cost(X, current_centers, weights=weights)
+    print(f"! kmeans++ local search start: n={n}, k={current_centers.shape[0]}, steps={n_steps}, cost={current_cost:.6f}")
 
     for step in range(n_steps):
         # Compute squared distances to nearest center
@@ -207,7 +216,9 @@ def _kmeans_plus_plus_local_search(X, centers, weights, n_steps=100, random_stat
         if best_cost < current_cost:
             current_centers = best_centers
             current_cost = best_cost
+            print(f"! kmeans++ local step={step} improved cost={current_cost:.6f}")
 
+    print(f"! kmeans++ local search done: final_cost={current_cost:.6f}")
     return current_centers, current_cost
 
 
