@@ -404,7 +404,7 @@ def main():
     """Choose loader + generic workflow mode."""
     eps = 0.07
     compression_ratio = 1 / 100
-    beta = 21
+    beta = 2
     local_search_steps = 4
     verbose = True
 
