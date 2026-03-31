@@ -39,7 +39,15 @@ def load_image_as_rgb_array(image_path):
     return rgb_array, (height, width, 3)
 
 
-def compress_image_with_coreset(image_path, t, eps=0.1, random_state=None, n_steps=67):
+def compress_image_with_coreset(
+    image_path,
+    t,
+    eps=0.1,
+    random_state=None,
+    n_steps=67,
+    compression_ratio=None,
+    verbose=False,
+):
     """
     Compress an image using coreset-based k-means on RGB values.
 
@@ -55,6 +63,10 @@ def compress_image_with_coreset(image_path, t, eps=0.1, random_state=None, n_ste
         Random seed.
     n_steps : int
         Number of local-search steps in weighted kmeans++ refinement.
+    compression_ratio : float or None
+        Desired coreset size as a fraction of full pixel count.
+    verbose : bool
+        If True, print compact diagnostics.
 
     Returns
     -------
@@ -77,13 +89,20 @@ def compress_image_with_coreset(image_path, t, eps=0.1, random_state=None, n_ste
     rgb_points = rgb_array[:, 2:5].astype(float)  # r, g, b
 
     # Initial k-means++ on RGB data
-    initial_centers = kmeans_plus_plus_init(rgb_points, t, random_state=random_state)
+    initial_centers = kmeans_plus_plus_init(rgb_points, t, random_state=random_state, verbose=verbose)
     
     # Compute cost with initial centers
     initial_cost = compute_kmeans_cost(rgb_points, initial_centers)
 
     # Build coreset on RGB data
-    coreset_points, coreset_weights, _ = exponential_quadtree_coreset(rgb_points, initial_centers, eps, random_state=random_state)
+    coreset_points, coreset_weights, _ = exponential_quadtree_coreset(
+        rgb_points,
+        initial_centers,
+        eps,
+        random_state=random_state,
+        compression_ratio=compression_ratio,
+        verbose=verbose,
+    )
 
     # Weighted k-means++ local search on coreset
     final_centers, _ = kmeans_plus_plus_local_search_weighted(
@@ -91,7 +110,8 @@ def compress_image_with_coreset(image_path, t, eps=0.1, random_state=None, n_ste
         coreset_weights,
         t,
         n_steps=n_steps,
-        random_state=random_state
+        random_state=random_state,
+        verbose=verbose,
     )
     
     # Compute cost with final centers
@@ -111,6 +131,7 @@ def compress_image_with_coreset(image_path, t, eps=0.1, random_state=None, n_ste
     stats = {
         'full_size': rgb_points.shape[0],
         'coreset_size': coreset_points.shape[0],
+        'compression_ratio_achieved': coreset_points.shape[0] / rgb_points.shape[0],
         'initial_cost': initial_cost,
         'final_cost': final_cost,
     }

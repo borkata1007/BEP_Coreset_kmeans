@@ -1,7 +1,7 @@
 import numpy as np
 
 
-def kmeans_plus_plus_init(X, k, random_state=None):
+def kmeans_plus_plus_init(X, k, random_state=None, verbose=False):
     """
     Perform k-means++ initialization on data of arbitrary dimension.
 
@@ -23,11 +23,13 @@ def kmeans_plus_plus_init(X, k, random_state=None):
         np.random.seed(random_state)
 
     n, d = X.shape
-    print(f"! kmeans++ init: n={n}, d={d}, k={k}")
+    if verbose:
+        print(f"! kmeans++ init: n={n}, d={d}, k={k}")
 
     # Choose first center uniformly at random
     first_idx = np.random.randint(0, n)
-    print(f"! kmeans++ first center idx={first_idx}")
+    if verbose:
+        print(f"! kmeans++ first center idx={first_idx}")
     centers = np.array([X[first_idx]])  # shape (1, d)
 
     # Initial distances from all points to the first center
@@ -42,7 +44,8 @@ def kmeans_plus_plus_init(X, k, random_state=None):
 
         # Sample a new center index according to these probabilities
         new_center_index = np.random.choice(n, p=probabilities)
-        print(f"! kmeans++ step={step} picked idx={new_center_index}")
+        if verbose:
+            print(f"! kmeans++ step={step} picked idx={new_center_index}")
         new_center = X[new_center_index]
 
         # Add the new center to centers (keep shape (num_centers, d))
@@ -52,11 +55,12 @@ def kmeans_plus_plus_init(X, k, random_state=None):
         distances_to_new_center = np.linalg.norm(X - new_center, axis=1)
         min_distances = np.minimum(min_distances, distances_to_new_center)
 
-    print(f"! kmeans++ init done: centers={centers.shape[0]}")
+    if verbose:
+        print(f"! kmeans++ init done: centers={centers.shape[0]}")
     return centers
 
 
-def kmeans_plus_plus_init_weighted(X, weights, k, random_state=None):
+def kmeans_plus_plus_init_weighted(X, weights, k, random_state=None, verbose=False):
     """
     Perform k-means++ initialization on weighted data (e.g., coreset points) of arbitrary dimension.
 
@@ -81,11 +85,13 @@ def kmeans_plus_plus_init_weighted(X, weights, k, random_state=None):
 
     n, d = X.shape
     weights = np.asarray(weights)
-    print(f"! kmeans++ weighted init: n={n}, d={d}, k={k}")
+    if verbose:
+        print(f"! kmeans++ weighted init: n={n}, d={d}, k={k}")
 
     # Choose first center uniformly at random (weighted)
     first_idx = np.random.choice(n, p=weights / weights.sum())
-    print(f"! kmeans++ weighted first center idx={first_idx}")
+    if verbose:
+        print(f"! kmeans++ weighted first center idx={first_idx}")
     centers = np.array([X[first_idx]])  # shape (1, d)
 
     # Initial distances from all points to the first center
@@ -106,7 +112,8 @@ def kmeans_plus_plus_init_weighted(X, weights, k, random_state=None):
 
         # Sample a new center index according to these probabilities
         new_center_index = np.random.choice(n, p=probabilities)
-        print(f"! kmeans++ weighted step={step} picked idx={new_center_index}")
+        if verbose:
+            print(f"! kmeans++ weighted step={step} picked idx={new_center_index}")
         new_center = X[new_center_index]
 
         # Add the new center to centers
@@ -116,7 +123,8 @@ def kmeans_plus_plus_init_weighted(X, weights, k, random_state=None):
         distances_to_new_center = np.linalg.norm(X - new_center, axis=1)
         min_distances = np.minimum(min_distances, distances_to_new_center)
 
-    print(f"! kmeans++ weighted init done: centers={centers.shape[0]}")
+    if verbose:
+        print(f"! kmeans++ weighted init done: centers={centers.shape[0]}")
     return centers
 
 
@@ -158,7 +166,7 @@ def compute_kmeans_cost(X, centers, weights=None):
     return np.sum(min_distances_sq * weights)
 
 
-def _kmeans_plus_plus_local_search(X, centers, weights, n_steps=100, random_state=None):
+def _kmeans_plus_plus_local_search(X, centers, weights, n_steps=100, random_state=None, verbose=False):
     """
     General local search for k-means++ replacement procedure.
 
@@ -182,7 +190,8 @@ def _kmeans_plus_plus_local_search(X, centers, weights, n_steps=100, random_stat
 
     current_centers = centers.copy()
     current_cost = compute_kmeans_cost(X, current_centers, weights=weights)
-    print(f"! kmeans++ local search start: n={n}, k={current_centers.shape[0]}, steps={n_steps}, cost={current_cost:.6f}")
+    if verbose:
+        print(f"! kmeans++ local search start: n={n}, k={current_centers.shape[0]}, steps={n_steps}, cost={current_cost:.6f}")
 
     for step in range(n_steps):
         # Compute squared distances to nearest center
@@ -216,19 +225,35 @@ def _kmeans_plus_plus_local_search(X, centers, weights, n_steps=100, random_stat
         if best_cost < current_cost:
             current_centers = best_centers
             current_cost = best_cost
-            print(f"! kmeans++ local step={step} improved cost={current_cost:.6f}")
+            if verbose:
+                print(f"! kmeans++ local step={step} improved cost={current_cost:.6f}")
 
-    print(f"! kmeans++ local search done: final_cost={current_cost:.6f}")
+    if verbose:
+        print(f"! kmeans++ local search done: final_cost={current_cost:.6f}")
     return current_centers, current_cost
 
 
-def kmeans_plus_plus_local_search_full(X, k, n_steps=100, random_state=None):
+def kmeans_plus_plus_local_search_full(X, k, n_steps=100, random_state=None, verbose=False):
     """kmeans++ + local search for unweighted full point set."""
-    centers = kmeans_plus_plus_init(X, k, random_state=random_state)
-    return _kmeans_plus_plus_local_search(X, centers, weights=None, n_steps=n_steps, random_state=random_state)
+    centers = kmeans_plus_plus_init(X, k, random_state=random_state, verbose=verbose)
+    return _kmeans_plus_plus_local_search(
+        X,
+        centers,
+        weights=None,
+        n_steps=n_steps,
+        random_state=random_state,
+        verbose=verbose,
+    )
 
 
-def kmeans_plus_plus_local_search_weighted(X, weights, k, n_steps=100, random_state=None):
+def kmeans_plus_plus_local_search_weighted(X, weights, k, n_steps=100, random_state=None, verbose=False):
     """kmeans++ + local search for weighted point set."""
-    centers = kmeans_plus_plus_init_weighted(X, weights, k, random_state=random_state)
-    return _kmeans_plus_plus_local_search(X, centers, weights=weights, n_steps=n_steps, random_state=random_state)
+    centers = kmeans_plus_plus_init_weighted(X, weights, k, random_state=random_state, verbose=verbose)
+    return _kmeans_plus_plus_local_search(
+        X,
+        centers,
+        weights=weights,
+        n_steps=n_steps,
+        random_state=random_state,
+        verbose=verbose,
+    )
