@@ -391,7 +391,29 @@ def _direct_coreset_with_beta(X, eps, cost, k, beta, random_state=None, max_dept
     return reps_arr, weights_arr, hypercubes
 
 
-def _tune_beta(root, target_ratio, eps, cost, k, n, d, tolerance, max_iter, use_critical_search=False, verbose=False):
+def _tune_beta(
+    root,
+    target_ratio,
+    eps,
+    cost,
+    k,
+    n,
+    d,
+    tolerance,
+    max_iter,
+    use_critical_search=False,
+    verbose=False,
+    beta_search_precision=None,
+):
+    ratio_cache = {}
+
+    def ratio_for_beta(beta):
+        beta = float(beta)
+        key = round(beta, 12)
+        if key not in ratio_cache:
+            ratio_cache[key] = count_coreset_size(root, beta, eps, cost, k, n, d) / n
+        return ratio_cache[key]
+
     if use_critical_search:
         critical = _collect_critical_betas(root, eps, cost, k, n, d)
         if critical.size > 0:
@@ -401,7 +423,7 @@ def _tune_beta(root, target_ratio, eps, cost, k, n, d, tolerance, max_iter, use_
             for it in range(max_iter):
                 mid_i = (lo_i + hi_i) // 2
                 beta = float(critical[mid_i])
-                ratio = count_coreset_size(root, beta, eps, cost, k, n, d) / n
+                ratio = ratio_for_beta(beta)
                 gap = abs(ratio - target_ratio)
                 if gap < best_gap:
                     best_gap = gap
@@ -433,20 +455,20 @@ def _tune_beta(root, target_ratio, eps, cost, k, n, d, tolerance, max_iter, use_
 
     # Continuous binary search on monotone size(beta).
     lo, hi = 1e-12, 1.0
-    ratio_lo = count_coreset_size(root, lo, eps, cost, k, n, d) / n
-    ratio_hi = count_coreset_size(root, hi, eps, cost, k, n, d) / n
+    ratio_lo = ratio_for_beta(lo)
+    ratio_hi = ratio_for_beta(hi)
 
     for _ in range(30):
         if ratio_hi <= target_ratio:
             break
         hi *= 2.0
-        ratio_hi = count_coreset_size(root, hi, eps, cost, k, n, d) / n
+        ratio_hi = ratio_for_beta(hi)
 
     for _ in range(30):
         if ratio_lo >= target_ratio:
             break
         lo *= 0.5
-        ratio_lo = count_coreset_size(root, lo, eps, cost, k, n, d) / n
+        ratio_lo = ratio_for_beta(lo)
 
     if verbose:
         print(
@@ -461,8 +483,16 @@ def _tune_beta(root, target_ratio, eps, cost, k, n, d, tolerance, max_iter, use_
         best_gap = abs(ratio_hi - target_ratio)
 
     for it in range(max_iter):
+        if beta_search_precision is not None and (hi - lo) <= beta_search_precision:
+            if verbose:
+                print(
+                    f"! EQT tune stop: beta interval {hi - lo:.6g} <= precision {beta_search_precision:.6g}",
+                    flush=True,
+                )
+            return best_beta
+
         mid = 0.5 * (lo + hi)
-        ratio_mid = count_coreset_size(root, mid, eps, cost, k, n, d) / n
+        ratio_mid = ratio_for_beta(mid)
         gap = abs(ratio_mid - target_ratio)
 
         if gap < best_gap:
@@ -508,6 +538,7 @@ def exponential_quadtree_coreset(
     verbose=False,
     max_depth=None,
     use_critical_search=False,
+    beta_search_precision=None,
     return_info=False,
     keep_empty_cells=False,
 ):
@@ -537,6 +568,9 @@ def exponential_quadtree_coreset(
         Optional geometric depth cap for tree construction.
     use_critical_search : bool
         If True, searches over cached node critical beta values.
+    beta_search_precision : float or None
+        Optional absolute stopping threshold for the beta binary-search interval.
+        Larger values stop sooner and are useful for faster experiment sweeps.
     return_info : bool
         If True, also returns a metadata dict with tuned beta and sizes.
     keep_empty_cells : bool
@@ -646,6 +680,7 @@ def exponential_quadtree_coreset(
             max_iter,
             use_critical_search=use_critical_search,
             verbose=verbose,
+            beta_search_precision=beta_search_precision,
         )
 
     reps, weights, hypercubes = extract_coreset(root, beta, eps, cost, k, n, d, X, keep_empty_cells=keep_empty_cells)

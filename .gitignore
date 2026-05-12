@@ -1,0 +1,17 @@
+__pycache__/
+*.py[cod]
+.ipynb_checkpoints/
+
+# Local/generated visual outputs
+Plots/**/*.png
+Plots/**/*.jpg
+Plots/**/*.jpeg
+citibike_k*_centers.png
+boris_citibike_2d_scatter.png
+
+# Large raw/intermediate datasets
+202312-citibike-tripdata_1.csv
+uber-raw-data-jul14.csv
+boris_citibike_duration.csv
+boris_citibike_2d.csv
+final_datasets/*/csv/boris_citibike_2d.csv

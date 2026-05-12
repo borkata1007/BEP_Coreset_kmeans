@@ -46,6 +46,7 @@ def compress_image_with_coreset(
     random_state=None,
     n_steps=67,
     compression_ratio=None,
+    beta_search_precision=None,
     verbose=False,
 ):
     """
@@ -65,6 +66,9 @@ def compress_image_with_coreset(
         Number of local-search steps in weighted kmeans++ refinement.
     compression_ratio : float or None
         Desired coreset size as a fraction of full pixel count.
+    beta_search_precision : float or None
+        Optional absolute stopping threshold for beta search when targeting
+        compression_ratio.
     verbose : bool
         If True, print compact diagnostics.
 
@@ -101,6 +105,7 @@ def compress_image_with_coreset(
         eps,
         random_state=random_state,
         compression_ratio=compression_ratio,
+        beta_search_precision=beta_search_precision,
         verbose=verbose,
     )
 
