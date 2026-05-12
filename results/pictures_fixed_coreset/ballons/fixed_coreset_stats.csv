@@ -1,0 +1,6 @@
+image,target_coreset_size,raw_coreset_size,final_coreset_size,trimmed_to_exact,beta,eps,reference_k,full_size,height,width,reference_cost,render_cost,output_path
+ballons.jpg,2,8,2,True,2097152.0,0.1,8,8294400,2160,3840,28585824722.0,125785967450.0,results\pictures_fixed_coreset\ballons\ballons_coreset_2.jpg
+ballons.jpg,4,8,4,True,2097152.0,0.1,8,8294400,2160,3840,28585824722.0,71107067008.0,results\pictures_fixed_coreset\ballons\ballons_coreset_4.jpg
+ballons.jpg,8,8,8,False,196608.0,0.1,8,8294400,2160,3840,28585824722.0,64173622436.0,results\pictures_fixed_coreset\ballons\ballons_coreset_8.jpg
+ballons.jpg,32,36,32,True,36864.0,0.1,8,8294400,2160,3840,28585824722.0,12621286974.0,results\pictures_fixed_coreset\ballons\ballons_coreset_32.jpg
+ballons.jpg,128,129,128,True,3584.0,0.1,8,8294400,2160,3840,28585824722.0,3230174015.0,results\pictures_fixed_coreset\ballons\ballons_coreset_128.jpg

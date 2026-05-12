@@ -1,0 +1,6 @@
+image,target_coreset_size,raw_coreset_size,final_coreset_size,trimmed_to_exact,beta,eps,reference_k,full_size,height,width,reference_cost,render_cost,output_path
+ballon_morteza.png,2,8,2,True,4194304.0,0.1,8,611800,644,950,1028596481.0,3890922994.0,results\pictures_fixed_coreset\ballon_morteza\ballon_morteza_coreset_2.png
+ballon_morteza.png,4,8,4,True,4194304.0,0.1,8,611800,644,950,1028596481.0,2108827200.0,results\pictures_fixed_coreset\ballon_morteza\ballon_morteza_coreset_4.png
+ballon_morteza.png,8,8,8,False,786432.0,0.1,8,611800,644,950,1028596481.0,1806895804.0,results\pictures_fixed_coreset\ballon_morteza\ballon_morteza_coreset_8.png
+ballon_morteza.png,32,34,32,True,49152.0,0.1,8,611800,644,950,1028596481.0,383155370.0,results\pictures_fixed_coreset\ballon_morteza\ballon_morteza_coreset_32.png
+ballon_morteza.png,128,131,128,True,5120.0,0.1,8,611800,644,950,1028596481.0,91535152.0,results\pictures_fixed_coreset\ballon_morteza\ballon_morteza_coreset_128.png

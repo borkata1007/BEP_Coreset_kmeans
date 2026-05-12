@@ -5,7 +5,7 @@ import matplotlib.pyplot as plt
 
 
 INPUT_FILE = Path("boris_citibike_2d.csv")
-OUTPUT_DIR = Path("Plots") / "citibike_overview"
+OUTPUT_DIR = Path("results") / "citibike" / "plots"
 OUTPUT_FILE = OUTPUT_DIR / "boris_citibike_2d_scatter.png"
 
 

@@ -1,0 +1,6 @@
+image,colors,output_path,height,width,full_size,coreset_size,compression_ratio_achieved,initial_cost,final_cost,eps,beta,local_search_steps
+ballon_morteza.png,2,results\pictures\ballon_morteza\ballon_morteza_compressed_2_colors.png,644,950,611800,98,0.00016018306636155606,3190989587.0,3158349660.0,0.1,640.0,8
+ballon_morteza.png,4,results\pictures\ballon_morteza\ballon_morteza_compressed_4_colors.png,644,950,611800,191,0.00031219352729650214,1968587888.0,1572180970.0,0.1,640.0,8
+ballon_morteza.png,8,results\pictures\ballon_morteza\ballon_morteza_compressed_8_colors.png,644,950,611800,335,0.0005475645635828702,1028596481.0,816495703.0,0.1,640.0,8
+ballon_morteza.png,32,results\pictures\ballon_morteza\ballon_morteza_compressed_32_colors.png,644,950,611800,1520,0.002484472049689441,222474363.0,206194392.0,0.1,640.0,8
+ballon_morteza.png,128,results\pictures\ballon_morteza\ballon_morteza_compressed_128_colors.png,644,950,611800,6041,0.009874141876430206,61170022.0,62501506.0,0.1,640.0,8

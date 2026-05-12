@@ -20,7 +20,7 @@ def load_image_as_rgb_array(image_path):
     image_shape : tuple
         Original image shape (height, width, channels).
     """
-    img = Image.open(image_path)
+    img = Image.open(image_path).convert("RGB")
     img_array = np.array(img)
     height, width, _ = img_array.shape
 
@@ -39,6 +39,24 @@ def load_image_as_rgb_array(image_path):
     return rgb_array, (height, width, 3)
 
 
+def _compute_kmeans_cost_chunked(X, centers, chunk_size=250_000):
+    total_cost = 0.0
+    for start in range(0, X.shape[0], chunk_size):
+        chunk = X[start:start + chunk_size]
+        distances = np.linalg.norm(chunk[:, np.newaxis] - centers[np.newaxis, :], axis=2)
+        total_cost += float(np.sum(np.min(distances, axis=1) ** 2))
+    return total_cost
+
+
+def _assign_nearest_centers_chunked(X, centers, chunk_size=250_000):
+    assignments = np.empty(X.shape[0], dtype=np.int64)
+    for start in range(0, X.shape[0], chunk_size):
+        chunk = X[start:start + chunk_size]
+        distances = np.linalg.norm(chunk[:, np.newaxis] - centers[np.newaxis, :], axis=2)
+        assignments[start:start + chunk.shape[0]] = np.argmin(distances, axis=1)
+    return assignments
+
+
 def compress_image_with_coreset(
     image_path,
     t,
@@ -46,6 +64,7 @@ def compress_image_with_coreset(
     random_state=None,
     n_steps=67,
     compression_ratio=None,
+    beta=None,
     beta_search_precision=None,
     verbose=False,
 ):
@@ -96,7 +115,7 @@ def compress_image_with_coreset(
     initial_centers = kmeans_plus_plus_init(rgb_points, t, random_state=random_state, verbose=verbose)
     
     # Compute cost with initial centers
-    initial_cost = compute_kmeans_cost(rgb_points, initial_centers)
+    initial_cost = _compute_kmeans_cost_chunked(rgb_points, initial_centers)
 
     # Build coreset on RGB data
     coreset_points, coreset_weights, _ = exponential_quadtree_coreset(
@@ -104,6 +123,7 @@ def compress_image_with_coreset(
         initial_centers,
         eps,
         random_state=random_state,
+        beta=beta,
         compression_ratio=compression_ratio,
         beta_search_precision=beta_search_precision,
         verbose=verbose,
@@ -120,11 +140,10 @@ def compress_image_with_coreset(
     )
     
     # Compute cost with final centers
-    final_cost = compute_kmeans_cost(rgb_points, final_centers)
+    final_cost = _compute_kmeans_cost_chunked(rgb_points, final_centers)
 
     # Assign each pixel to nearest center
-    distances = np.linalg.norm(rgb_points[:, np.newaxis] - final_centers[np.newaxis, :], axis=2)
-    nearest_center_indices = np.argmin(distances, axis=1)
+    nearest_center_indices = _assign_nearest_centers_chunked(rgb_points, final_centers)
 
     # Reconstruct image: each pixel gets color of its nearest center
     compressed_rgb = final_centers[nearest_center_indices].astype(np.uint8)

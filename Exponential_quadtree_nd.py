@@ -19,6 +19,16 @@ class QuadNode:
     midpoints: np.ndarray | None = None
 
 
+def _compute_kmeans_cost_chunked(X, centers, chunk_size=250_000):
+    X = np.asarray(X)
+    centers = np.asarray(centers)
+    total_cost = 0.0
+    for start in range(0, X.shape[0], chunk_size):
+        chunk = X[start:start + chunk_size]
+        total_cost += float(compute_kmeans_cost(chunk, centers))
+    return total_cost
+
+
 def _bounds_to_hypercube(bounds_min, bounds_max):
     values = []
     for i in range(bounds_min.size):
@@ -595,7 +605,7 @@ def exponential_quadtree_coreset(
     if verbose:
         print(f"! EQT build start: n={n}, d={d}, eps={eps}, beta={beta}, target_ratio={compression_ratio}", flush=True)
 
-    cost = float(compute_kmeans_cost(X, centers))
+    cost = float(_compute_kmeans_cost_chunked(X, centers))
 
     # Fixed-beta mode: use direct threshold recursion so beta impacts construction immediately.
     if beta is not None:

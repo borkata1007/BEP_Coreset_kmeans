@@ -108,6 +108,8 @@ def run_coreset_workflow(
     beta_search_precision=None,
     verbose=True,
     plot_dims=(0, 1),
+    plot_labels=None,
+    equal_aspect=False,
 ):
     """Generic coreset workflow for any numeric dataset in shape (n, d)."""
     print("=" * 60)
@@ -171,13 +173,21 @@ def run_coreset_workflow(
     print(f"Cost(P,C')/Cost(P,C): {pcp_over_pc:.8f}")
 
     x_dim, y_dim = plot_dims
+    if plot_labels is None:
+        x_label = f"Feature {x_dim}"
+        y_label = f"Feature {y_dim}"
+    else:
+        x_label, y_label = plot_labels
+
     plt.figure(figsize=(6, 5))
     plt.scatter(X[:, x_dim], X[:, y_dim], c="lightgray", alpha=0.5, edgecolor="none", label="Data points")
     plt.scatter(c[:, x_dim], c[:, y_dim], c="red", s=150, marker="X", label="Centers c (full local)", linewidths=2)
     plt.scatter(c_prime[:, x_dim], c_prime[:, y_dim], c="blue", s=150, marker="+", label="Centers c' (coreset local)", linewidths=2)
-    plt.xlabel(f"Feature {x_dim}")
-    plt.ylabel(f"Feature {y_dim}")
+    plt.xlabel(x_label)
+    plt.ylabel(y_label)
     plt.title(f"{title}: centers comparison")
+    if equal_aspect:
+        plt.gca().set_aspect("equal", adjustable="box")
     plt.legend()
     plt.tight_layout()
 
@@ -204,9 +214,11 @@ def run_coreset_workflow(
     )
     cbar = plt.colorbar(scatter)
     cbar.set_label("Weight")
-    plt.xlabel(f"Feature {x_dim}")
-    plt.ylabel(f"Feature {y_dim}")
+    plt.xlabel(x_label)
+    plt.ylabel(y_label)
     plt.title(f"{title}: EQT coreset projection")
+    if equal_aspect:
+        plt.gca().set_aspect("equal", adjustable="box")
     plt.legend()
     plt.tight_layout()
     plt.show()

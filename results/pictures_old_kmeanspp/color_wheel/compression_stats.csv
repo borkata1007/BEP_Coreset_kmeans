@@ -1,0 +1,6 @@
+image,colors,output_path,height,width,full_size,coreset_size,compression_ratio_achieved,initial_cost,final_cost,eps,beta,local_search_steps
+color_wheel.png,2,results\pictures\color_wheel\color_wheel_compressed_2_colors.png,900,860,774000,43,5.555555555555556e-05,18259097241.0,13759851495.0,0.1,640.0,8
+color_wheel.png,4,results\pictures\color_wheel\color_wheel_compressed_4_colors.png,900,860,774000,60,7.751937984496124e-05,12514895491.0,6341890321.0,0.1,640.0,8
+color_wheel.png,8,results\pictures\color_wheel\color_wheel_compressed_8_colors.png,900,860,774000,158,0.0002041343669250646,4473456741.0,2894650214.0,0.1,640.0,8
+color_wheel.png,32,results\pictures\color_wheel\color_wheel_compressed_32_colors.png,900,860,774000,925,0.0011950904392764858,692503771.0,588078387.0,0.1,640.0,8
+color_wheel.png,128,results\pictures\color_wheel\color_wheel_compressed_128_colors.png,900,860,774000,4172,0.005390180878552971,132142644.0,134030194.0,0.1,640.0,8

@@ -1,0 +1,6 @@
+image,target_coreset_size,raw_coreset_size,final_coreset_size,trimmed_to_exact,beta,eps,reference_k,full_size,height,width,reference_cost,render_cost,output_path
+Copy of birb.png,2,8,2,True,4194304.0,0.1,8,1048576,1024,1024,976590652.0,5580504544.0,results\pictures_fixed_coreset\Copy_of_birb\Copy of birb_coreset_2.png
+Copy of birb.png,4,8,4,True,4194304.0,0.1,8,1048576,1024,1024,976590652.0,5393263394.0,results\pictures_fixed_coreset\Copy_of_birb\Copy of birb_coreset_4.png
+Copy of birb.png,8,8,8,False,1572864.0,0.1,8,1048576,1024,1024,976590652.0,5204079177.0,results\pictures_fixed_coreset\Copy_of_birb\Copy of birb_coreset_8.png
+Copy of birb.png,32,35,32,True,81920.0,0.1,8,1048576,1024,1024,976590652.0,366169095.0,results\pictures_fixed_coreset\Copy_of_birb\Copy of birb_coreset_32.png
+Copy of birb.png,128,129,128,True,7168.0,0.1,8,1048576,1024,1024,976590652.0,112156204.0,results\pictures_fixed_coreset\Copy_of_birb\Copy of birb_coreset_128.png

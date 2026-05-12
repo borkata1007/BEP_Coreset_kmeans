@@ -1,0 +1,6 @@
+image,colors,output_path,height,width,full_size,coreset_size,compression_ratio_achieved,initial_cost,final_cost,eps,beta,local_search_steps
+ballons.jpg,2,results\pictures\ballons\ballons_compressed_2_colors.jpg,2160,3840,8294400,75,9.04224537037037e-06,111912599488.0,105801655905.0,0.1,640.0,8
+ballons.jpg,4,results\pictures\ballons\ballons_compressed_4_colors.jpg,2160,3840,8294400,168,2.025462962962963e-05,57258095207.0,50501830454.0,0.1,640.0,8
+ballons.jpg,8,results\pictures\ballons\ballons_compressed_8_colors.jpg,2160,3840,8294400,346,4.1714891975308645e-05,28585824722.0,29720557704.0,0.1,640.0,8
+ballons.jpg,32,results\pictures\ballons\ballons_compressed_32_colors.jpg,2160,3840,8294400,1470,0.00017722800925925927,10115006352.0,8184530758.0,0.1,640.0,8
+ballons.jpg,128,results\pictures\ballons\ballons_compressed_128_colors.jpg,2160,3840,8294400,6132,0.0007392939814814815,2742278917.0,2485352252.0,0.1,640.0,8

@@ -1,0 +1,6 @@
+image,colors,output_path,height,width,full_size,coreset_size,compression_ratio_achieved,initial_cost,final_cost,eps,beta,local_search_steps
+Copy of birb.png,2,results\pictures\Copy_of_birb\Copy of birb_compressed_2_colors.png,1024,1024,1048576,96,9.1552734375e-05,6438639539.0,3302397522.0,0.1,640.0,8
+Copy of birb.png,4,results\pictures\Copy_of_birb\Copy of birb_compressed_4_colors.png,1024,1024,1048576,193,0.00018405914306640625,2650887971.0,1573406812.0,0.1,640.0,8
+Copy of birb.png,8,results\pictures\Copy_of_birb\Copy of birb_compressed_8_colors.png,1024,1024,1048576,449,0.00042819976806640625,976590652.0,714835005.0,0.1,640.0,8
+Copy of birb.png,32,results\pictures\Copy_of_birb\Copy of birb_compressed_32_colors.png,1024,1024,1048576,1823,0.0017385482788085938,245355518.0,200287100.0,0.1,640.0,8
+Copy of birb.png,128,results\pictures\Copy_of_birb\Copy of birb_compressed_128_colors.png,1024,1024,1048576,6787,0.006472587585449219,73896362.0,72323944.0,0.1,640.0,8

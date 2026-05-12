@@ -1,0 +1,2 @@
+image,target_coreset_size,raw_coreset_size,final_coreset_size,trimmed_to_exact,beta,eps,reference_k,full_size,height,width,reference_cost,render_cost,output_path
+color_wheel.png,8,13,8,True,131072.0,0.1,8,774000,900,860,4473456741.0,3434691174.0,results\pictures_fixed_coreset\color_wheel\color_wheel_coreset_8.png

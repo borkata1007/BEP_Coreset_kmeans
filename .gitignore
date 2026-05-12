@@ -14,4 +14,4 @@ boris_citibike_2d_scatter.png
 uber-raw-data-jul14.csv
 boris_citibike_duration.csv
 boris_citibike_2d.csv
-final_datasets/*/csv/boris_citibike_2d.csv
+final_datasets/*.csv
