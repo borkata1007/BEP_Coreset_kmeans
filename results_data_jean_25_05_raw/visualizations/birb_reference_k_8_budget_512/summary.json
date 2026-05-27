@@ -1,0 +1,10 @@
+{
+  "dataset":"birb",
+  "reference_k":8,
+  "budget":512,
+  "raw_size":517,
+  "actual_size":512,
+  "z":0.4978036048,
+  "eps_report":0.8,
+  "reconstruction_cost":526.4419992311
+}

@@ -1,0 +1,2 @@
+Dataset,Clusters,Budget,Iteration,Cost,Time,RawSize,ActualSize,Trimmed,Z,EpsReport,Beta,ReferenceCost,FinalKMeansTime,CostTime,WeightedSteps,RefLloydIterations
+spotify,2,64,0,39676959.67465988,4.366979200014612,64,64,False,0.32873784695783514,0.9,0.8485298436496348,52856055.2789631,0.000444200006313622,0.016570999985560775,20,0

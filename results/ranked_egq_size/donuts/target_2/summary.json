@@ -1,0 +1,23 @@
+{
+  "dataset":"Donuts",
+  "n":1000000,
+  "d":2,
+  "k":9,
+  "target_coreset_size":2,
+  "raw_coreset_size":4,
+  "actual_coreset_size":2,
+  "trimmed_to_target":true,
+  "trimmed_weight_rescaled":true,
+  "weights_sum":1000000.0000000001,
+  "z_used":7610.0230490033,
+  "beta_used":0.9985216478,
+  "eps_min":87.2354460584,
+  "eps_report":87.3,
+  "rank_interval_low":17.2246210393,
+  "rank_interval_high":189.1054324599,
+  "reference_cost":121322.4023899716,
+  "runtime_seconds":1.1333351,
+  "verification_matched_size":true,
+  "verification_ranked_size":4,
+  "verification_formula_size":4
+}

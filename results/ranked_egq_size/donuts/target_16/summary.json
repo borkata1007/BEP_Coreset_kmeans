@@ -1,0 +1,18 @@
+{
+  "dataset":"Donuts",
+  "n":1000000,
+  "d":2,
+  "k":9,
+  "target_coreset_size":16,
+  "actual_coreset_size":18,
+  "weights_sum":1000000.0,
+  "beta_used":1.0,
+  "eps_used":14.7090251943,
+  "rank_interval_low":1.5637955546,
+  "rank_interval_high":1.6835938461,
+  "reference_cost":121322.4023899716,
+  "runtime_seconds":1.3207767,
+  "verification_matched_size":true,
+  "verification_ranked_size":18,
+  "verification_formula_size":18
+}

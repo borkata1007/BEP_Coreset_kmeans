@@ -1,0 +1,2 @@
+dataset,n,d,k,target_coreset_size,raw_coreset_size,actual_coreset_size,trimmed_to_target,trimmed_weight_rescaled,weights_sum,beta_used,eps_used,rank_interval_low,rank_interval_high,reference_cost,runtime_seconds,verification_matched_size,verification_ranked_size,verification_formula_size
+Donuts,1000000,2,9,4,4,4,False,False,1000000.0,1.0,87.23544605837291,17.22462103925121,189.10543245989268,121322.40238997163,1.0535840000084136,True,4,4

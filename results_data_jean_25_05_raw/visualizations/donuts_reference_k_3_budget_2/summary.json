@@ -1,0 +1,10 @@
+{
+  "dataset":"donuts",
+  "reference_k":3,
+  "budget":2,
+  "raw_size":4,
+  "actual_size":2,
+  "z":221.349339434,
+  "eps_report":14.9,
+  "assignment_cost":137979739.0491819084
+}
